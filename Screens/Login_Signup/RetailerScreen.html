@@ -1,0 +1,473 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Retailer Purchase & Dues Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 6px;
+      width: 400px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .actions button {
+      margin-right: 5px;
+    }
+    /* Retailer details page */
+    #retailerDetails {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #purchaseTable th {
+      background-color: #28a745;
+    }
+    .total-dues {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #d9534f; /* Red for dues */
+    }
+    .paid {
+      color: green;
+    }
+    .unpaid {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Retailer Purchase & Dues Tracker</h1>
+
+  <button id="addRetailerBtn">Add New Retailer</button>
+
+  <table id="retailerTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Total Due</th>
+        <th>Last Payment Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Retailer rows will be dynamically inserted here -->
+    </tbody>
+  </table>
+
+  <!-- Add Retailer Modal -->
+  <div id="addRetailerModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Add New Retailer</div>
+      <form id="addRetailerForm">
+        <div class="form-group">
+          <label for="retName">Name</label>
+          <input type="text" id="retName" name="retName" required />
+        </div>
+        <div class="form-group">
+          <label for="retPhone">Phone</label>
+          <input type="tel" id="retPhone" name="retPhone" required pattern="[0-9]{10,15}" />
+        </div>
+        <div class="form-group">
+          <label for="retOpeningBalance">Opening Balance</label>
+          <input type="number" id="retOpeningBalance" name="retOpeningBalance" value="0" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label for="retNotes">Notes</label>
+          <textarea id="retNotes" name="retNotes" rows="3"></textarea>
+        </div>
+        <button type="submit">Add Retailer</button>
+        <button type="button" id="closeAddModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Retailer Details Section -->
+  <div id="retailerDetails">
+    <h2 id="detailsName"></h2>
+    <p><strong>Phone:</strong> <span id="detailsPhone"></span></p>
+    <p><strong>Notes:</strong> <span id="detailsNotes"></span></p>
+
+    <p class="total-dues">Total Pending Dues: <span id="totalDues"></span></p>
+
+    <h3>Purchase History</h3>
+    <table id="purchaseTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Purchases will be inserted here -->
+      </tbody>
+    </table>
+
+    <button id="recordPurchaseBtn">Record New Purchase</button>
+    <button id="settlePaymentBtn">Settlement Payment</button>
+    <button id="backToListBtn">Back to Retailer List</button>
+  </div>
+
+  <!-- Record Purchase Modal -->
+  <div id="recordPurchaseModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Record New Purchase</div>
+      <form id="recordPurchaseForm">
+        <div class="form-group">
+          <label for="purchaseDate">Date</label>
+          <input type="date" id="purchaseDate" name="purchaseDate" required />
+        </div>
+        <div class="form-group">
+          <label for="purchaseProduct">Product</label>
+          <input type="text" id="purchaseProduct" name="purchaseProduct" required />
+        </div>
+        <div class="form-group">
+          <label for="purchaseAmount">Amount</label>
+          <input type="number" id="purchaseAmount" name="purchaseAmount" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="purchaseStatus">Status</label>
+          <select id="purchaseStatus" name="purchaseStatus" required>
+            <option value="unpaid">Unpaid</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+        <button type="submit">Record</button>
+        <button type="button" id="closeRecordModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settlement Payment Modal -->
+  <div id="settlePaymentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Settlement Payment</div>
+      <form id="settlePaymentForm">
+        <div class="form-group">
+          <label for="settleDate">Date</label>
+          <input type="date" id="settleDate" name="settleDate" required />
+        </div>
+        <div class="form-group">
+          <label for="settleAmount">Amount Paid</label>
+          <input type="number" id="settleAmount" name="settleAmount" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="settleNotes">Notes</label>
+          <textarea id="settleNotes" name="settleNotes" rows="2"></textarea>
+        </div>
+        <button type="submit">Settle</button>
+        <button type="button" id="closeSettleModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Data storage (in-memory for demo)
+    let retailers = [];
+    let selectedRetailerId = null;
+
+    // Utility to format date as YYYY-MM-DD
+    function formatDate(date) {
+      const d = new Date(date);
+      return d.toISOString().split('T')[0];
+    }
+
+    // Calculate total due for a retailer based on unpaid purchases
+    function calculateTotalDues(retailer) {
+      return retailer.purchases
+        .filter(p => p.status === 'unpaid')
+        .reduce((total, p) => total + p.amount, 0)
+        .toFixed(2);
+    }
+
+    // Get last payment date (from paid purchases or settlements)
+    function getLastPaymentDate(retailer) {
+      // Assuming purchases have dates, but settlements are separate. For simplicity, use last unpaid to paid or settlement.
+      // Here, we'll say last date any purchase was marked as paid or a settlement was made.
+      const allDates = retailer.purchases
+        .filter(p => p.status === 'paid' || retailer.settlements.some(s => s.date >= p.date)) // Simplified
+        .map(p => new Date(p.date))
+        .concat(retailer.settlements.map(s => new Date(s.date)))
+        .sort((a,b) => b - a);
+      return allDates.length > 0 ? formatDate(allDates[0]) : '-';
+    }
+
+    // Render retailer list table
+    function renderRetailerTable() {
+      const tbody = document.querySelector('#retailerTable tbody');
+      tbody.innerHTML = '';
+      retailers.forEach((ret, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${ret.name}</td>
+          <td>${ret.phone}</td>
+          <td>${calculateTotalDues(ret)}</td>
+          <td>${getLastPaymentDate(ret)}</td>
+          <td class="actions">
+            <button onclick="viewRetailerDetails(${index})">View</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Show modal helper
+    function showModal(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+    }
+    // Hide modal helper
+    function hideModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Add New Retailer button click
+    document.getElementById('addRetailerBtn').addEventListener('click', () => {
+      document.getElementById('addRetailerForm').reset();
+      showModal('addRetailerModal');
+    });
+
+    // Close Add Retailer modal
+    document.getElementById('closeAddModal').addEventListener('click', () => {
+      hideModal('addRetailerModal');
+    });
+
+    // Add Retailer form submit
+    document.getElementById('addRetailerForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = e.target.retName.value.trim();
+      const phone = e.target.retPhone.value.trim();
+      const openingBalance = parseFloat(e.target.retOpeningBalance.value) || 0;
+      const notes = e.target.retNotes.value.trim();
+
+      const newRetailer = {
+        name,
+        phone,
+        notes,
+        purchases: [],
+        settlements: []
+      };
+      if (openingBalance !== 0) {
+        newRetailer.purchases.push({
+          date: formatDate(new Date()),
+          product: 'Opening Balance',
+          amount: openingBalance,
+          status: 'unpaid'
+        });
+      }
+      retailers.push(newRetailer);
+      renderRetailerTable();
+      hideModal('addRetailerModal');
+    });
+
+    // View Retailer Details
+    function viewRetailerDetails(index) {
+      selectedRetailerId = index;
+      const ret = retailers[index];
+      document.getElementById('detailsName').textContent = ret.name;
+      document.getElementById('detailsPhone').textContent = ret.phone;
+      document.getElementById('detailsNotes').textContent = ret.notes || '-';
+
+      renderPurchaseHistory(ret);
+      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(ret);
+
+      document.getElementById('retailerDetails').style.display = 'block';
+      document.getElementById('retailerTable').style.display = 'none';
+      document.getElementById('addRetailerBtn').style.display = 'none';
+    }
+
+    // Render purchase history table
+    function renderPurchaseHistory(retailer) {
+      const tbody = document.querySelector('#purchaseTable tbody');
+      tbody.innerHTML = '';
+      retailer.purchases.forEach((p, idx) => {
+        const statusClass = p.status === 'paid' ? 'paid' : 'unpaid';
+        const statusText = p.status.charAt(0).toUpperCase() + p.status.slice(1);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.date}</td>
+          <td>${p.product}</td>
+          <td>$${p.amount.toFixed(2)}</td>
+          <td class="${statusClass}">${statusText}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      // Optional: Add settlements as additional rows or separately
+      retailer.settlements.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.date}</td>
+          <td>Payment Settlement</td>
+          <td>-$${s.amount.toFixed(2)}</td>
+          <td>Settled</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Back to retailer list
+    document.getElementById('backToListBtn').addEventListener('click', () => {
+      selectedRetailerId = null;
+      document.getElementById('retailerDetails').style.display = 'none';
+      document.getElementById('retailerTable').style.display = 'table';
+      document.getElementById('addRetailerBtn').style.display = 'inline-block';
+    });
+
+    // Record New Purchase button
+    document.getElementById('recordPurchaseBtn').addEventListener('click', () => {
+      document.getElementById('recordPurchaseForm').reset();
+      document.getElementById('purchaseDate').value = formatDate(new Date());
+      showModal('recordPurchaseModal');
+    });
+
+    // Close Record modal
+    document.getElementById('closeRecordModal').addEventListener('click', () => {
+      hideModal('recordPurchaseModal');
+    });
+
+    // Record Purchase form submit
+    document.getElementById('recordPurchaseForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (selectedRetailerId === null) return;
+
+      const date = e.target.purchaseDate.value;
+      const product = e.target.purchaseProduct.value.trim();
+      const amount = parseFloat(e.target.purchaseAmount.value);
+      const status = e.target.purchaseStatus.value;
+
+      if (amount <= 0) {
+        alert('Amount must be greater than zero.');
+        return;
+      }
+
+      retailers[selectedRetailerId].purchases.push({
+        date,
+        product,
+        amount,
+        status
+      });
+
+      renderPurchaseHistory(retailers[selectedRetailerId]);
+      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(retailers[selectedRetailerId]);
+      renderRetailerTable();
+      hideModal('recordPurchaseModal');
+    });
+
+    // Settlement Payment button
+    document.getElementById('settlePaymentBtn').addEventListener('click', () => {
+      document.getElementById('settlePaymentForm').reset();
+      document.getElementById('settleDate').value = formatDate(new Date());
+      showModal('settlePaymentModal');
+    });
+
+    // Close Settle modal
+    document.getElementById('closeSettleModal').addEventListener('click', () => {
+      hideModal('settlePaymentModal');
+    });
+
+    // Settle Payment form submit
+    document.getElementById('settlePaymentForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if (selectedRetailerId === null) return;
+
+      const date = e.target.settleDate.value;
+      const amount = parseFloat(e.target.settleAmount.value);
+      const notes = e.target.settleNotes.value.trim();
+
+      if (amount <= 0) {
+        alert('Amount must be greater than zero.');
+        return;
+      }
+
+      retailers[selectedRetailerId].settlements.push({
+        date,
+        amount,
+        notes
+      });
+
+      // Optionally mark unpaid purchases as paid up to the amount, but for simplicity, just record settlement.
+      renderPurchaseHistory(retailers[selectedRetailerId]);
+      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(retailers[selectedRetailerId]);
+      renderRetailerTable();
+      hideModal('settlePaymentModal');
+    });
+
+    // Initial render
+    renderRetailerTable();
+  </script>
+</body>
+</html>
+</content>
+</create_file>
