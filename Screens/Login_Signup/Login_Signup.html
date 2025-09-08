@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopKeeper Login/Signup</title>
     <!-- TailwindCSS Import -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons (simple icons like user/shield) -->
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full mx-4">
         <div class="text-center mb-6">
@@ -20,66 +22,40 @@
         <form id="authForm" class="space-y-4">
             <!-- Username/Mobile Input -->
             <div>
-                <label for="usernameMobile" class="block text-sm font-medium text-gray-700">Username / Mobile Number</label>
-                <input 
-                    type="text" 
-                    id="usernameMobile" 
-                    name="usernameMobile" 
-                    pattern="[a-zA-Z0-9]+" 
-                    placeholder="Enter your username or mobile number" 
-                    required 
-                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg"
-                >
+                <label for="usernameMobile" class="block text-sm font-medium text-gray-700">Username / Mobile
+                    Number</label>
+                <input type="text" id="usernameMobile" name="usernameMobile" pattern="[a-zA-Z0-9]+"
+                    placeholder="Enter your username or mobile number" required
+                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg">
             </div>
 
             <!-- Password Input -->
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="Enter your password" 
-                    required 
-                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg"
-                >
+                <input type="password" id="password" name="password" placeholder="Enter your password" required
+                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg">
             </div>
 
-            <!-- Hidden Confirm Password for Signup (shown via JS) -->
+            <!-- Hidden Confirm Password for Signup -->
             <div id="confirmPasswordDiv" class="hidden">
                 <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword" 
-                    placeholder="Re-enter your password" 
-                    required 
-                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg"
-                >
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password"
+                    class="mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-lg">
             </div>
 
             <!-- Buttons -->
-            <button 
-                type="submit" 
-                id="submitButton" 
-                class="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
-            >
+            <button type="submit" id="submitButton"
+                class="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold">
                 Login
             </button>
 
-            <button 
-                type="button" 
-                id="toggleButton" 
-                class="w-full bg-gray-500 text-white py-3 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-lg"
-            >
+            <button type="button" id="toggleButton"
+                class="w-full bg-gray-500 text-white py-3 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-lg">
                 Switch to Signup
             </button>
 
-            <button 
-                type="button" 
-                id="forgotButton" 
-                class="w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-lg"
-            >
+            <button type="button" id="forgotButton"
+                class="w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 text-lg">
                 Forgot Password
             </button>
         </form>
@@ -90,7 +66,6 @@
     </div>
 
     <script>
-        // Elements
         const formTitle = document.getElementById('formTitle');
         const submitButton = document.getElementById('submitButton');
         const toggleButton = document.getElementById('toggleButton');
@@ -100,7 +75,7 @@
 
         let isSignup = false;
 
-        // Toggle between Login and Signup
+        // Toggle Login/Signup
         toggleButton.addEventListener('click', () => {
             isSignup = !isSignup;
             if (isSignup) {
@@ -125,12 +100,12 @@
                 statusMessage.textContent = 'Please enter your username or mobile number to reset password.';
                 return;
             }
-            // Simulate forgot password (in real app, send reset link)
             statusMessage.textContent = `Password reset link sent to ${username}. (Simulation)`;
         });
 
         // Form Submission
-        authForm.addEventListener('submit', async (e) => { e.preventDefault();
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
             const usernameMobile = document.getElementById('usernameMobile').value.trim();
             const password = document.getElementById('password').value;
@@ -141,7 +116,6 @@
                     statusMessage.textContent = "Passwords do not match.";
                     return;
                 }
-                
 
                 // Call Signup API
                 let res = await fetch("http://127.0.0.1:5000/signup", {
@@ -154,26 +128,29 @@
                 statusMessage.textContent = data.message;
             } else {
                 // Call Login API
-                let res = await fetch("http://127.0.0.1:5000/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: usernameMobile, password: password })
-                });
+                try {
+                    let res = await fetch("http://127.0.0.1:5000/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ username: usernameMobile, password: password })
+                    });
 
-                let data = await res.json();
-                statusMessage.textContent = data.message;
-                if (res.ok && data.success) {  
-                  <a href="Screens\Login_Signup\index.html">Logout</a>
-                } else {
-                    // stay on login and show error
-                    statusMessage.textContent = data.message || "Login failed";
+                    let data = await res.json().catch(() => ({}));
+                    console.log("Login API Response:", data);
+
+                    if (res.ok && (data.success === true || data.message?.toLowerCase().includes("success"))) {
+                        statusMessage.textContent = "✅ " + (data.message || "Login successful");
+                        setTimeout(() => { window.location.href = "index.html"; }, 1000);
+                    } else {
+                        statusMessage.textContent = "❌ " + (data.message || "Login failed");
+                    }
+                } catch (err) {
+                    console.error("Error calling login API:", err);
+                    statusMessage.textContent = "⚠️ Server error: " + err.message;
                 }
             }
-        }
-    );
-
+        });
     </script>
 </body>
+
 </html>
-</content>
-</create_file>
