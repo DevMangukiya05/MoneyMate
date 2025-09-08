@@ -162,8 +162,15 @@
 
                 let data = await res.json();
                 statusMessage.textContent = data.message;
+                if (res.ok && data.success) {  
+                  <a href="Screens\Login_Signup\index.html">Logout</a>
+                } else {
+                    // stay on login and show error
+                    statusMessage.textContent = data.message || "Login failed";
+                }
             }
-        });
+        }
+    );
 
     </script>
 </body>
