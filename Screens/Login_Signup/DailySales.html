@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Sales & Expense Entry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    input[type="date"], input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .profit-display {
+      font-size: 18px;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 10px;
+    }
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background: #fff;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    .loss {
+      color: red;
+    }
+    .profit-positive {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Daily Sales & Expense Entry</h1>
+
+  <div class="form-container">
+    <form id="entryForm">
+      <div class="form-group">
+        <label for="entryDate">Date</label>
+        <input type="date" id="entryDate" name="entryDate" required />
+      </div>
+      <div class="form-group">
+        <label for="salesAmount">Sales Amount</label>
+        <input type="number" id="salesAmount" name="salesAmount" min="0" step="0.01" required />
+      </div>
+      <div class="form-group">
+        <label for="expenses">Expenses (Rent, Electricity, Misc.)</label>
+        <input type="number" id="expenses" name="expenses" min="0" step="0.01" required />
+      </div>
+      <div class="form-group">
+        <label for="retailerPayments">Retailer Payments</label>
+        <input type="number" id="retailerPayments" name="retailerPayments" min="0" step="0.01" required />
+      </div>
+      <div class="profit-display">
+        Profit: <span id="profitCalc">$0.00</span>
+      </div>
+      <button type="submit">Save Entry</button>
+      <button type="button" id="resetBtn">Reset</button>
+    </form>
+  </div>
+
+  <h2>Sales & Expense History</h2>
+  <table id="historyTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Sales</th>
+        <th>Expenses</th>
+        <th>Retailer Payments</th>
+        <th>Profit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- History rows will be dynamically inserted here -->
+    </tbody>
+  </table>
+
+  <script>
+    // Data storage (in-memory for demo)
+    let entries = [];
+
+    // Utility to format date as YYYY-MM-DD
+    function formatDate(date) {
+      const d = new Date(date);
+      return d.toISOString().split('T')[0];
+    }
+
+    // Set default date to today
+    document.getElementById('entryDate').value = formatDate(new Date());
+
+    // Auto-calculate profit when inputs change
+    function updateProfit() {
+      const sales = parseFloat(document.getElementById('salesAmount').value) || 0;
+      const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+      const retailerPayments = parseFloat(document.getElementById('retailerPayments').value) || 0;
+      const profit = sales - expenses - retailerPayments;
+      document.getElementById('profitCalc').textContent = '$' + profit.toFixed(2);
+    }
+
+    // Event listeners for live calculation
+    document.getElementById('salesAmount').addEventListener('input', updateProfit);
+    document.getElementById('expenses').addEventListener('input', updateProfit);
+    document.getElementById('retailerPayments').addEventListener('input', updateProfit);
+
+    // Render history table
+    function renderHistory() {
+      const tbody = document.querySelector('#historyTable tbody');
+      tbody.innerHTML = '';
+      entries.forEach(entry => {
+        const profitClass = entry.profit < 0 ? 'loss' : entry.profit > 0 ? 'profit-positive' : '';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${entry.date}</td>
+          <td>$${entry.sales.toFixed(2)}</td>
+          <td>$${entry.expenses.toFixed(2)}</td>
+          <td>$${entry.retailerPayments.toFixed(2)}</td>
+          <td class="${profitClass}">$${entry.profit.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Form submit - Save entry
+    document.getElementById('entryForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const date = e.target.entryDate.value;
+      const sales = parseFloat(e.target.salesAmount.value);
+      const expenses = parseFloat(e.target.expenses.value);
+      const retailerPayments = parseFloat(e.target.retailerPayments.value);
+      const profit = sales - expenses - retailerPayments;
+
+      if (sales < 0 || expenses < 0 || retailerPayments < 0) {
+        alert('Amounts cannot be negative.');
+        return;
+      }
+
+      entries.push({ date, sales, expenses, retailerPayments, profit });
+      renderHistory();
+      e.target.reset();
+      document.getElementById('entryDate').value = formatDate(new Date());
+      updateProfit();
+    });
+
+    // Reset button
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('entryForm').reset();
+      document.getElementById('entryDate').value = formatDate(new Date());
+      updateProfit();
+    });
+
+    // Initial profit update
+    updateProfit();
+    // Initial render (empty)
+    renderHistory();
+  </script>
+</body>
+</html>
+</content>
+</create_file>

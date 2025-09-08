@@ -43,15 +43,35 @@
 <body class="bg-gray-100 min-h-screen">
     <!-- Header -->
     <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
-        <div class="dropdown">
+        <!-- Left side: My Shop + Accounts -->
+        <div class="flex items-center space-x-4">
+            <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
+            
+            <!-- Accounts Button -->
+            <button onclick="window.location.href='KhataManagementScreen.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Customer
+            </button>
+            <button onclick="window.location.href='RetailerScreen.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Retailer 
+            </button>
+            <button onclick="window.location.href='DailySales.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Daily Sales 
+            </button>
+        </div>
+
+        <!-- Right side: User Dropdown -->
+        <div class="dropdown relative">
             <button class="text-gray-800 font-medium">User ▼</button>
-            <div class="dropdown-content">
-                <a href="#profile">Profile</a>
-                <a href="Login_Signup.html">Logout</a>
+            <div class="dropdown-content absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
+                <a href="#profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                <a href="Login_Signup.html" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
             </div>
         </div>
     </header>
+
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-8">
@@ -61,27 +81,27 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-medium text-gray-700">Total Customer Dues</h3>
-                        <p class="text-3xl font-bold text-green-600">$12,345.67</p>
+                        <p class="text-3xl font-bold text-green-600">12,345.67</p>
                     </div>
-                    <div class="card-icon">[MONEY BAG] 💰</div> <!-- Replaced emoji with text placeholder -->
+                    <div class="card-icon"> 💰</div> <!-- Replaced emoji with text placeholder -->
                 </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-medium text-gray-700">Total Retailer Dues</h3>
-                        <p class="text-3xl font-bold text-blue-600">$8,910.11</p>
+                        <p class="text-3xl font-bold text-blue-600">8,910.11</p>
                     </div>
-                    <div class="card-icon">[RECEIPT] 🧾</div> <!-- Replaced emoji with text placeholder -->
+                    <div class="card-icon"> 🧾</div> <!-- Replaced emoji with text placeholder -->
                 </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-medium text-gray-700">Today’s Profit</h3>
-                        <p class="text-3xl font-bold text-purple-600">$1,234.56</p>
+                        <p class="text-3xl font-bold text-purple-600">1,234.56</p>
                     </div>
-                    <div class="card-icon">[CHART INCREASING] 📊</div> <!-- Replaced emoji with text placeholder -->
+                    <div class="card-icon"> 📊</div> <!-- Replaced emoji with text placeholder -->
                 </div>
             </div>
         </section>
