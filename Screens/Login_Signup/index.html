@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard - Summary View</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .card-icon {
+            font-size: 2rem;
+            color: #4F46E5; /* Indigo color for emphasis */
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        .dropdown:hover .dropdown-content {display: block;}
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
+        <div class="dropdown">
+            <button class="text-gray-800 font-medium">User ▼</button>
+            <div class="dropdown-content">
+                <a href="#profile">Profile</a>
+                <a href="Login_Signup.html">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Summary Boxes -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700">Total Customer Dues</h3>
+                        <p class="text-3xl font-bold text-green-600">$12,345.67</p>
+                    </div>
+                    <div class="card-icon">[MONEY BAG] 💰</div> <!-- Replaced emoji with text placeholder -->
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700">Total Retailer Dues</h3>
+                        <p class="text-3xl font-bold text-blue-600">$8,910.11</p>
+                    </div>
+                    <div class="card-icon">[RECEIPT] 🧾</div> <!-- Replaced emoji with text placeholder -->
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-700">Today’s Profit</h3>
+                        <p class="text-3xl font-bold text-purple-600">$1,234.56</p>
+                    </div>
+                    <div class="card-icon">[CHART INCREASING] 📊</div> <!-- Replaced emoji with text placeholder -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Graph/Chart Section -->
+        <section class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Weekly Sales vs Expenses</h2>
+            <canvas id="salesExpensesChart"></canvas>
+        </section>
+
+        <!-- Quick Links -->
+        <section class="flex flex-wrap gap-4">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Customer</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Sale</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Retailer</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">View Reports</button>
+        </section>
+    </main>
+
+    <script>
+        // Chart.js for Weekly Sales vs Expenses Bar Chart
+        const ctx = document.getElementById('salesExpensesChart').getContext('2d');
+        const salesExpensesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    {
+                        label: 'Sales',
+                        data: [1200, 1500, 1800, 2000, 2200, 1900, 1700], // Dummy sales data
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)', // Green color
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Expenses',
+                        data: [800, 1000, 1200, 1400, 1300, 1100, 900], // Dummy expenses data
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)', // Red color
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Weekly Sales vs Expenses'
+                    }
+                }
+            }
+        });
+
+        // JavaScript for smooth interactions (optional)
+        // For dropdown functionality, already handled with CSS hover
+    </script>
+</body>
+</html>
+</content>
+</create_file>
