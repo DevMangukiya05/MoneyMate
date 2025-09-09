@@ -43,16 +43,35 @@
 <body class="bg-gray-100 min-h-screen">
     <!-- Header -->
     <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
-        <div class="dropdown">
-            <button class="text-gray-800 font-medium">User ▼</button>
+        <!-- Left side: My Shop + Accounts -->
+        <div class="flex items-center space-x-4">
+            <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
             
-            <div class="dropdown-content">
-                <a href="#profile">Profile</a>
-                <a href="Login_Signup.html">Logout</a>
+            <!-- Accounts Button -->
+            <button onclick="window.location.href='KhataManagementScreen.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Customer
+            </button>
+            <button onclick="window.location.href='RetailerScreen.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Retailer 
+            </button>
+            <button onclick="window.location.href='DailySales.html'" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
+                Daily Sales 
+            </button>
+        </div>
+
+        <!-- Right side: User Dropdown -->
+        <div class="dropdown relative">
+            <button class="text-gray-800 font-medium">User ▼</button>
+            <div class="dropdown-content absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
+                <a href="#profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                <a href="Login_Signup.html" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
             </div>
         </div>
     </header>
+
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-8">
