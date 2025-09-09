@@ -103,10 +103,9 @@
       <div class="profit-display">
         Profit: <span id="profitCalc">$0.00</span>
       </div>
-      <button type="submit">Save Entry</button>
-      <button type="button" id="resetBtn">Reset</button>
+        <button type="submit">Save Entry</button>
+        <button type="button" id="resetBtn">Reset</button>
     </form>
-  </div>
 
   <h2>Sales & Expense History</h2>
   <table id="historyTable">
@@ -124,84 +123,105 @@
     </tbody>
   </table>
 
-  <script>
-    // Data storage (in-memory for demo)
-    let entries = [];
+<script>
+    // API base URL (Flask running on localhost:5000)
+    const API_URL = "http://127.0.0.1:5000";
 
     // Utility to format date as YYYY-MM-DD
     function formatDate(date) {
       const d = new Date(date);
-      return d.toISOString().split('T')[0];
+      return d.toISOString().split("T")[0];
     }
 
     // Set default date to today
-    document.getElementById('entryDate').value = formatDate(new Date());
+    document.getElementById("entryDate").value = formatDate(new Date());
 
-    // Auto-calculate profit when inputs change
+    // Auto-calculate profit
     function updateProfit() {
-      const sales = parseFloat(document.getElementById('salesAmount').value) || 0;
-      const expenses = parseFloat(document.getElementById('expenses').value) || 0;
-      const retailerPayments = parseFloat(document.getElementById('retailerPayments').value) || 0;
+      const sales = parseFloat(document.getElementById("salesAmount").value) || 0;
+      const expenses = parseFloat(document.getElementById("expenses").value) || 0;
+      const retailerPayments = parseFloat(document.getElementById("retailerPayments").value) || 0;
       const profit = sales - expenses - retailerPayments;
-      document.getElementById('profitCalc').textContent = profit.toFixed(2);
+      document.getElementById("profitCalc").textContent = profit.toFixed(2);
     }
 
-    // Event listeners for live calculation
-    document.getElementById('salesAmount').addEventListener('input', updateProfit);
-    document.getElementById('expenses').addEventListener('input', updateProfit);
-    document.getElementById('retailerPayments').addEventListener('input', updateProfit);
+    // Live update listeners
+    document.getElementById("salesAmount").addEventListener("input", updateProfit);
+    document.getElementById("expenses").addEventListener("input", updateProfit);
+    document.getElementById("retailerPayments").addEventListener("input", updateProfit);
 
-    // Render history table
-    function renderHistory() {
-      const tbody = document.querySelector('#historyTable tbody');
-      tbody.innerHTML = '';
-      entries.forEach(entry => {
-        const profitClass = entry.profit < 0 ? 'loss' : entry.profit > 0 ? 'profit-positive' : '';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${entry.date}</td>
-          <td>$${entry.sales.toFixed(2)}</td>
-          <td>$${entry.expenses.toFixed(2)}</td>
-          <td>$${entry.retailerPayments.toFixed(2)}</td>
-          <td class="${profitClass}">$${entry.profit.toFixed(2)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Form submit - Save entry
-    document.getElementById('entryForm').addEventListener('submit', e => {
+    // Submit form -> send to Flask API
+    document.getElementById("entryForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const date = e.target.entryDate.value;
-      const sales = parseFloat(e.target.salesAmount.value);
-      const expenses = parseFloat(e.target.expenses.value);
-      const retailerPayments = parseFloat(e.target.retailerPayments.value);
-      const profit = sales - expenses - retailerPayments;
 
-      if (sales < 0 || expenses < 0 || retailerPayments < 0) {
-        alert('Amounts cannot be negative.');
-        return;
+      const entryData = {
+        entryDate: document.getElementById("entryDate").value,
+        salesAmount: document.getElementById("salesAmount").value,
+        expenses: document.getElementById("expenses").value,
+        retailerPayments: document.getElementById("retailerPayments").value,
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/save_entry`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(entryData),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        // Reload history from DB
+        loadHistory();
+
+        // Reset form
+        e.target.reset();
+        document.getElementById("entryDate").value = formatDate(new Date());
+        updateProfit();
+      } catch (error) {
+        console.error("Error saving entry:", error);
       }
-
-      entries.push({ date, sales, expenses, retailerPayments, profit });
-      renderHistory();
-      e.target.reset();
-      document.getElementById('entryDate').value = formatDate(new Date());
-      updateProfit();
     });
 
     // Reset button
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      document.getElementById('entryForm').reset();
-      document.getElementById('entryDate').value = formatDate(new Date());
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      document.getElementById("entryForm").reset();
+      document.getElementById("entryDate").value = formatDate(new Date());
       updateProfit();
     });
 
-    // Initial profit update
+    // Load history from Flask API
+    async function loadHistory() {
+      try {
+        const response = await fetch(`${API_URL}/get_entries`);
+        const entries = await response.json();
+
+        const tbody = document.querySelector("#historyTable tbody");
+        tbody.innerHTML = "";
+
+        entries.forEach((entry) => {
+          const profitClass =
+            entry.profit < 0 ? "loss" : entry.profit > 0 ? "profit-positive" : "";
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${entry.entry_date}</td>
+            <td>${parseFloat(entry.sales_amount).toFixed(2)}</td>
+            <td>${parseFloat(entry.expenses).toFixed(2)}</td>
+            <td>${parseFloat(entry.retailer_payments).toFixed(2)}</td>
+            <td class="${profitClass}">${parseFloat(entry.profit).toFixed(2)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error("Error loading history:", error);
+      }
+    }
+
+    // Initial
     updateProfit();
-    // Initial render (empty)
-    renderHistory();
-  </script>
+    loadHistory();
+</script>
+
 </body>
 </html>
 </content>
