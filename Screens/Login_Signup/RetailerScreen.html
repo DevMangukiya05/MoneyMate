@@ -185,11 +185,9 @@
         <td>${ret.last_payment_date || "-"}</td>
         <td class="actions">
           <button onclick="viewRetailerDetails(${ret.id})">View</button>
-          <button onclick="editRetailer(${ret.id})">Edit</button>
-          <button onclick="deleteRetailer(${ret.id})">Delete</button>
         </td>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(tr);  
     });
   }
 
@@ -264,56 +262,6 @@
       alert("Failed to add retailer. See console for details.");
     }
   });
-
-  // Edit retailer
-  async function editRetailer(id) {
-    try {
-      const res = await fetch(`${API_URL}/retailers`);
-      const retailers = await res.json();
-      const retailer = retailers.find(r => r.id === id);
-      if (!retailer) return alert("Retailer not found");
-
-      document.getElementById("editRetName").value = retailer.name;
-      document.getElementById("editRetPhone").value = retailer.phone;
-      document.getElementById("editRetOpeningBalance").value = retailer.total_due || 0;
-      document.getElementById("editRetNotes").value = retailer.notes || "";
-
-      showModal("editRetailerModal");
-
-      document.getElementById("editRetailerForm").onsubmit = async e => {
-        e.preventDefault();
-        const updatedData = {
-          name: e.target.editRetName.value.trim(),
-          phone: e.target.editRetPhone.value.trim(),
-          openingBalance: parseFloat(e.target.editRetOpeningBalance.value) || 0,
-          notes: e.target.editRetNotes.value.trim()
-        };
-        try {
-          const updateRes = await fetch(`${API_URL}/retailers/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData)
-          });
-          const result = await updateRes.json();
-          alert(result.message);
-          hideModal("editRetailerModal");
-          loadRetailers();
-        } catch (err) { console.error("Error updating retailer:", err); }
-      };
-    } catch (err) { console.error("Error fetching retailer:", err); }
-  }
-
-  // Delete retailer
-  async function deleteRetailer(id) {
-    if (!confirm("Are you sure you want to delete this retailer?")) return;
-    try {
-      const res = await fetch(`${API_URL}/retailers/${id}`, { method: "DELETE" });
-      const result = await res.json();
-      alert(result.message);
-      loadRetailers();
-    } catch (err) { console.error("Error deleting retailer:", err); }
-  }
-
   // Back button
   document.getElementById("backToListBtn").addEventListener("click", () => {
     selectedRetailerId = null;
