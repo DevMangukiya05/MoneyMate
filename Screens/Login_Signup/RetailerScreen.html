@@ -1,114 +1,34 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Retailer Purchase & Dues Tracker</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      background: #fff;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #007bff;
-      color: white;
-    }
-    button {
-      padding: 8px 12px;
-      margin: 5px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 6px;
-      width: 400px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .modal-header {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      margin-bottom: 4px;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    .actions button {
-      margin-right: 5px;
-    }
-    /* Retailer details page */
-    #retailerDetails {
-      display: none;
-      background: #fff;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #purchaseTable th {
-      background-color: #28a745;
-    }
-    .total-dues {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #d9534f; /* Red for dues */
-    }
-    .paid {
-      color: green;
-    }
-    .unpaid {
-      color: red;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    h1 { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fff; }
+    th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #007bff; color: white; }
+    button { padding: 8px 12px; margin: 5px; border: none; background-color: #007bff; color: white; cursor: pointer; border-radius: 4px; }
+    button:hover { background-color: #0056b3; }
+    .modal { display: none; position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+    .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 6px; width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    .modal-header { font-size: 18px; margin-bottom: 10px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; margin-bottom: 4px; }
+    input, textarea, select { width: 100%; padding: 8px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc; }
+    .actions button { margin-right: 5px; }
+    #retailerDetails { display: none; background: #fff; padding: 20px; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    #purchaseTable th { background-color: #28a745; }
+    .total-dues { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #d9534f; }
+    .paid { color: green; }
+    .unpaid { color: red; }
   </style>
 </head>
 <body>
 
   <h1>Retailer Purchase & Dues Tracker</h1>
-
   <button id="addRetailerBtn">Add New Retailer</button>
 
   <table id="retailerTable">
@@ -121,9 +41,7 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Retailer rows will be dynamically inserted here -->
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <!-- Add Retailer Modal -->
@@ -153,27 +71,46 @@
     </div>
   </div>
 
+  <!-- Edit Retailer Modal -->
+  <div id="editRetailerModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">Edit Retailer</div>
+      <form id="editRetailerForm">
+        <div class="form-group">
+          <label for="editRetName">Name</label>
+          <input type="text" id="editRetName" name="editRetName" required />
+        </div>
+        <div class="form-group">
+          <label for="editRetPhone">Phone</label>
+          <input type="tel" id="editRetPhone" name="editRetPhone" required pattern="[0-9]{10,15}" />
+        </div>
+        <div class="form-group">
+          <label for="editRetOpeningBalance">Opening Balance</label>
+          <input type="number" id="editRetOpeningBalance" name="editRetOpeningBalance" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label for="editRetNotes">Notes</label>
+          <textarea id="editRetNotes" name="editRetNotes" rows="3"></textarea>
+        </div>
+        <button type="submit">Update Retailer</button>
+        <button type="button" id="closeEditModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Retailer Details Section -->
   <div id="retailerDetails">
     <h2 id="detailsName"></h2>
     <p><strong>Phone:</strong> <span id="detailsPhone"></span></p>
     <p><strong>Notes:</strong> <span id="detailsNotes"></span></p>
-
     <p class="total-dues">Total Pending Dues: <span id="totalDues"></span></p>
 
     <h3>Purchase History</h3>
     <table id="purchaseTable">
       <thead>
-        <tr>
-          <th>Date</th>
-          <th>Product</th>
-          <th>Amount</th>
-          <th>Status</th>
-        </tr>
+        <tr><th>Date</th><th>Product</th><th>Amount</th><th>Status</th></tr>
       </thead>
-      <tbody>
-        <!-- Purchases will be inserted here -->
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <button id="recordPurchaseBtn">Record New Purchase</button>
@@ -186,24 +123,12 @@
     <div class="modal-content">
       <div class="modal-header">Record New Purchase</div>
       <form id="recordPurchaseForm">
-        <div class="form-group">
-          <label for="purchaseDate">Date</label>
-          <input type="date" id="purchaseDate" name="purchaseDate" required />
-        </div>
-        <div class="form-group">
-          <label for="purchaseProduct">Product</label>
-          <input type="text" id="purchaseProduct" name="purchaseProduct" required />
-        </div>
-        <div class="form-group">
-          <label for="purchaseAmount">Amount</label>
-          <input type="number" id="purchaseAmount" name="purchaseAmount" step="0.01" required />
-        </div>
+        <div class="form-group"><label for="purchaseDate">Date</label><input type="date" id="purchaseDate" required /></div>
+        <div class="form-group"><label for="purchaseProduct">Product</label><input type="text" id="purchaseProduct" required /></div>
+        <div class="form-group"><label for="purchaseAmount">Amount</label><input type="number" id="purchaseAmount" step="0.01" required /></div>
         <div class="form-group">
           <label for="purchaseStatus">Status</label>
-          <select id="purchaseStatus" name="purchaseStatus" required>
-            <option value="unpaid">Unpaid</option>
-            <option value="paid">Paid</option>
-          </select>
+          <select id="purchaseStatus"><option value="unpaid">Unpaid</option><option value="paid">Paid</option></select>
         </div>
         <button type="submit">Record</button>
         <button type="button" id="closeRecordModal">Cancel</button>
@@ -211,263 +136,195 @@
     </div>
   </div>
 
-  <!-- Settlement Payment Modal -->
-  <div id="settlePaymentModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">Settlement Payment</div>
-      <form id="settlePaymentForm">
-        <div class="form-group">
-          <label for="settleDate">Date</label>
-          <input type="date" id="settleDate" name="settleDate" required />
-        </div>
-        <div class="form-group">
-          <label for="settleAmount">Amount Paid</label>
-          <input type="number" id="settleAmount" name="settleAmount" step="0.01" required />
-        </div>
-        <div class="form-group">
-          <label for="settleNotes">Notes</label>
-          <textarea id="settleNotes" name="settleNotes" rows="2"></textarea>
-        </div>
-        <button type="submit">Settle</button>
-        <button type="button" id="closeSettleModal">Cancel</button>
-      </form>
-    </div>
-  </div>
+<script>
+  const API_URL = "http://127.0.0.1:5000";
+  let selectedRetailerId = null;
 
-  <script>
-    // Data storage (in-memory for demo)
-    let retailers = [];
-    let selectedRetailerId = null;
+  // Utility to format date
+  function formatDate(date) {
+    const d = new Date(date);
+    return d.toISOString().split("T")[0];
+  }
 
-    // Utility to format date as YYYY-MM-DD
-    function formatDate(date) {
-      const d = new Date(date);
-      return d.toISOString().split('T')[0];
-    }
+  // Show/Hide modal helpers
+  function showModal(modalId) { document.getElementById(modalId).style.display = "block"; }
+  function hideModal(modalId) { document.getElementById(modalId).style.display = "none"; }
 
-    // Calculate total due for a retailer based on unpaid purchases
-    function calculateTotalDues(retailer) {
-      return retailer.purchases
-        .filter(p => p.status === 'unpaid')
-        .reduce((total, p) => total + p.amount, 0)
-        .toFixed(2);
-    }
+  // Show "Add Retailer" modal
+  document.getElementById("addRetailerBtn").addEventListener("click", () => showModal("addRetailerModal"));
+  document.getElementById("closeAddModal").addEventListener("click", () => hideModal("addRetailerModal"));
+  document.getElementById("closeEditModal").addEventListener("click", () => hideModal("editRetailerModal"));
 
-    // Get last payment date (from paid purchases or settlements)
-    function getLastPaymentDate(retailer) {
-      // Assuming purchases have dates, but settlements are separate. For simplicity, use last unpaid to paid or settlement.
-      // Here, we'll say last date any purchase was marked as paid or a settlement was made.
-      const allDates = retailer.purchases
-        .filter(p => p.status === 'paid' || retailer.settlements.some(s => s.date >= p.date)) // Simplified
-        .map(p => new Date(p.date))
-        .concat(retailer.settlements.map(s => new Date(s.date)))
-        .sort((a,b) => b - a);
-      return allDates.length > 0 ? formatDate(allDates[0]) : '-';
-    }
+  // Close modals on outside click
+  window.addEventListener("click", (e) => {
+    ["addRetailerModal", "editRetailerModal", "recordPurchaseModal"].forEach(id => {
+      const modal = document.getElementById(id);
+      if (e.target === modal) hideModal(id);
+    });
+  });
 
-    // Render retailer list table
-    function renderRetailerTable() {
-      const tbody = document.querySelector('#retailerTable tbody');
-      tbody.innerHTML = '';
-      retailers.forEach((ret, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${ret.name}</td>
-          <td>${ret.phone}</td>
-          <td>${calculateTotalDues(ret)}</td>
-          <td>${getLastPaymentDate(ret)}</td>
-          <td class="actions">
-            <button onclick="viewRetailerDetails(${index})">View</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+  // Load retailers from DB
+  async function loadRetailers() {
+    try {
+      const res = await fetch(`${API_URL}/get_retailers`);
+      const retailers = await res.json();
+      renderRetailerTable(retailers);
+    } catch (err) { console.error("Error loading retailers:", err); }
+  }
+
+  // Render retailers table with View/Edit/Delete buttons
+  function renderRetailerTable(retailers) {
+    const tbody = document.querySelector("#retailerTable tbody");
+    tbody.innerHTML = "";
+    retailers.forEach(ret => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${ret.name}</td>
+        <td>${ret.phone}</td>
+        <td>${ret.total_due || 0}</td>
+        <td>${ret.last_payment_date || "-"}</td>
+        <td class="actions">
+          <button onclick="viewRetailerDetails(${ret.id})">View</button>
+          <button onclick="editRetailer(${ret.id})">Edit</button>
+          <button onclick="deleteRetailer(${ret.id})">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // View retailer details
+  async function viewRetailerDetails(id) {
+    selectedRetailerId = id;
+    try {
+      const res = await fetch(`${API_URL}/get_retailers`)
+      const purchases = await res.json();
+
+      const detailsRes = await fetch(`${API_URL}/add_retailer`) 
+      const retailers = await detailsRes.json();
+      const retailer = retailers.find(r => r.id === id);
+
+      document.getElementById("detailsName").textContent = retailer.name;
+      document.getElementById("detailsPhone").textContent = retailer.phone;
+      document.getElementById("detailsNotes").textContent = retailer.notes || "-";
+
+      renderPurchaseHistory(purchases);
+      document.getElementById("totalDues").textContent = "$" + (retailer.total_due || 0);
+
+      document.getElementById("retailerDetails").style.display = "block";
+      document.getElementById("retailerTable").style.display = "table";
+      document.getElementById("addRetailerBtn").style.display = "inline-block";
+    } catch (err) { console.error("Error fetching retailer details:", err); }
+  }
+
+  function renderPurchaseHistory(purchases) {
+    const tbody = document.querySelector("#purchaseTable tbody");
+    tbody.innerHTML = "";
+    purchases.forEach(p => {
+      const statusClass = p.status === "paid" ? "paid" : "unpaid";
+      const statusText = p.status.charAt(0).toUpperCase() + p.status.slice(1);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.date}</td>
+        <td>${p.product}</td>
+        <td>$${parseFloat(p.amount).toFixed(2)}</td>
+        <td class="${statusClass}">${statusText}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+
+  // Add retailer
+  document.getElementById("addRetailerForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const name = e.target.retName.value.trim();
+    const phone = e.target.retPhone.value.trim();
+    const openingBalance = parseFloat(e.target.retOpeningBalance.value) || 0;
+    const notes = e.target.retNotes.value.trim();
+
+    try {
+      const res = await fetch(`${API_URL}/add_retailer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, notes, openingBalance })
       });
+
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const result = await res.json();
+      alert(result.message);
+
+      // ✅ Put these two lines here, after success
+      hideModal("addRetailerModal");
+      document.getElementById("addRetailerForm").reset();
+
+      loadRetailers(); // refresh the table
+    } catch (err) {
+      console.error("Error adding retailer:", err);
+      alert("Failed to add retailer. See console for details.");
     }
+  });
 
-    // Show modal helper
-    function showModal(modalId) {
-      document.getElementById(modalId).style.display = 'block';
-    }
-    // Hide modal helper
-    function hideModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
+  // Edit retailer
+  async function editRetailer(id) {
+    try {
+      const res = await fetch(`${API_URL}/retailers`);
+      const retailers = await res.json();
+      const retailer = retailers.find(r => r.id === id);
+      if (!retailer) return alert("Retailer not found");
 
-    // Add New Retailer button click
-    document.getElementById('addRetailerBtn').addEventListener('click', () => {
-      document.getElementById('addRetailerForm').reset();
-      showModal('addRetailerModal');
-    });
+      document.getElementById("editRetName").value = retailer.name;
+      document.getElementById("editRetPhone").value = retailer.phone;
+      document.getElementById("editRetOpeningBalance").value = retailer.total_due || 0;
+      document.getElementById("editRetNotes").value = retailer.notes || "";
 
-    // Close Add Retailer modal
-    document.getElementById('closeAddModal').addEventListener('click', () => {
-      hideModal('addRetailerModal');
-    });
+      showModal("editRetailerModal");
 
-    // Add Retailer form submit
-    document.getElementById('addRetailerForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const name = e.target.retName.value.trim();
-      const phone = e.target.retPhone.value.trim();
-      const openingBalance = parseFloat(e.target.retOpeningBalance.value) || 0;
-      const notes = e.target.retNotes.value.trim();
-
-      const newRetailer = {
-        name,
-        phone,
-        notes,
-        purchases: [],
-        settlements: []
+      document.getElementById("editRetailerForm").onsubmit = async e => {
+        e.preventDefault();
+        const updatedData = {
+          name: e.target.editRetName.value.trim(),
+          phone: e.target.editRetPhone.value.trim(),
+          openingBalance: parseFloat(e.target.editRetOpeningBalance.value) || 0,
+          notes: e.target.editRetNotes.value.trim()
+        };
+        try {
+          const updateRes = await fetch(`${API_URL}/retailers/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedData)
+          });
+          const result = await updateRes.json();
+          alert(result.message);
+          hideModal("editRetailerModal");
+          loadRetailers();
+        } catch (err) { console.error("Error updating retailer:", err); }
       };
-      if (openingBalance !== 0) {
-        newRetailer.purchases.push({
-          date: formatDate(new Date()),
-          product: 'Opening Balance',
-          amount: openingBalance,
-          status: 'unpaid'
-        });
-      }
-      retailers.push(newRetailer);
-      renderRetailerTable();
-      hideModal('addRetailerModal');
-    });
+    } catch (err) { console.error("Error fetching retailer:", err); }
+  }
 
-    // View Retailer Details
-    function viewRetailerDetails(index) {
-      selectedRetailerId = index;
-      const ret = retailers[index];
-      document.getElementById('detailsName').textContent = ret.name;
-      document.getElementById('detailsPhone').textContent = ret.phone;
-      document.getElementById('detailsNotes').textContent = ret.notes || '-';
+  // Delete retailer
+  async function deleteRetailer(id) {
+    if (!confirm("Are you sure you want to delete this retailer?")) return;
+    try {
+      const res = await fetch(`${API_URL}/retailers/${id}`, { method: "DELETE" });
+      const result = await res.json();
+      alert(result.message);
+      loadRetailers();
+    } catch (err) { console.error("Error deleting retailer:", err); }
+  }
 
-      renderPurchaseHistory(ret);
-      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(ret);
+  // Back button
+  document.getElementById("backToListBtn").addEventListener("click", () => {
+    selectedRetailerId = null;
+    document.getElementById("retailerDetails").style.display = "none";
+    document.getElementById("retailerTable").style.display = "table";
+    document.getElementById("addRetailerBtn").style.display = "inline-block";
+  });
 
-      document.getElementById('retailerDetails').style.display = 'block';
-      document.getElementById('retailerTable').style.display = 'none';
-      document.getElementById('addRetailerBtn').style.display = 'none';
-    }
+  // Initial load
+  loadRetailers();
+</script>
 
-    // Render purchase history table
-    function renderPurchaseHistory(retailer) {
-      const tbody = document.querySelector('#purchaseTable tbody');
-      tbody.innerHTML = '';
-      retailer.purchases.forEach((p, idx) => {
-        const statusClass = p.status === 'paid' ? 'paid' : 'unpaid';
-        const statusText = p.status.charAt(0).toUpperCase() + p.status.slice(1);
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.date}</td>
-          <td>${p.product}</td>
-          <td>$${p.amount.toFixed(2)}</td>
-          <td class="${statusClass}">${statusText}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-      // Optional: Add settlements as additional rows or separately
-      retailer.settlements.forEach(s => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${s.date}</td>
-          <td>Payment Settlement</td>
-          <td>-$${s.amount.toFixed(2)}</td>
-          <td>Settled</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Back to retailer list
-    document.getElementById('backToListBtn').addEventListener('click', () => {
-      selectedRetailerId = null;
-      document.getElementById('retailerDetails').style.display = 'none';
-      document.getElementById('retailerTable').style.display = 'table';
-      document.getElementById('addRetailerBtn').style.display = 'inline-block';
-    });
-
-    // Record New Purchase button
-    document.getElementById('recordPurchaseBtn').addEventListener('click', () => {
-      document.getElementById('recordPurchaseForm').reset();
-      document.getElementById('purchaseDate').value = formatDate(new Date());
-      showModal('recordPurchaseModal');
-    });
-
-    // Close Record modal
-    document.getElementById('closeRecordModal').addEventListener('click', () => {
-      hideModal('recordPurchaseModal');
-    });
-
-    // Record Purchase form submit
-    document.getElementById('recordPurchaseForm').addEventListener('submit', e => {
-      e.preventDefault();
-      if (selectedRetailerId === null) return;
-
-      const date = e.target.purchaseDate.value;
-      const product = e.target.purchaseProduct.value.trim();
-      const amount = parseFloat(e.target.purchaseAmount.value);
-      const status = e.target.purchaseStatus.value;
-
-      if (amount <= 0) {
-        alert('Amount must be greater than zero.');
-        return;
-      }
-
-      retailers[selectedRetailerId].purchases.push({
-        date,
-        product,
-        amount,
-        status
-      });
-
-      renderPurchaseHistory(retailers[selectedRetailerId]);
-      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(retailers[selectedRetailerId]);
-      renderRetailerTable();
-      hideModal('recordPurchaseModal');
-    });
-
-    // Settlement Payment button
-    document.getElementById('settlePaymentBtn').addEventListener('click', () => {
-      document.getElementById('settlePaymentForm').reset();
-      document.getElementById('settleDate').value = formatDate(new Date());
-      showModal('settlePaymentModal');
-    });
-
-    // Close Settle modal
-    document.getElementById('closeSettleModal').addEventListener('click', () => {
-      hideModal('settlePaymentModal');
-    });
-
-    // Settle Payment form submit
-    document.getElementById('settlePaymentForm').addEventListener('submit', e => {
-      e.preventDefault();
-      if (selectedRetailerId === null) return;
-
-      const date = e.target.settleDate.value;
-      const amount = parseFloat(e.target.settleAmount.value);
-      const notes = e.target.settleNotes.value.trim();
-
-      if (amount <= 0) {
-        alert('Amount must be greater than zero.');
-        return;
-      }
-
-      retailers[selectedRetailerId].settlements.push({
-        date,
-        amount,
-        notes
-      });
-
-      // Optionally mark unpaid purchases as paid up to the amount, but for simplicity, just record settlement.
-      renderPurchaseHistory(retailers[selectedRetailerId]);
-      document.getElementById('totalDues').textContent = '$' + calculateTotalDues(retailers[selectedRetailerId]);
-      renderRetailerTable();
-      hideModal('settlePaymentModal');
-    });
-
-    // Initial render
-    renderRetailerTable();
-  </script>
 </body>
 </html>
-</content>
-</create_file>
