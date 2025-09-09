@@ -32,45 +32,49 @@
             text-decoration: none;
             display: block;
         }
-        .dropdown-content a:hover {background-color: #f1f1f1}
         .dropdown:hover .dropdown-content {display: block;}
         canvas {
             max-width: 100%;
             height: auto;
         }
+        .topnav {
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .topnav a {
+            float: left;
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: #4F46E5;
+        }
+
+        .topnav a.active {
+            background-color: #4F46E5;
+            color: white;
+        }
+        .topnav a.arctive {
+            background-color: #d60404;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <!-- Left side: My Shop + Accounts -->
-        <div class="flex items-center space-x-4">
-            <h1 class="text-2xl font-bold text-gray-800">My Shop</h1>
-            
-            <!-- Accounts Button -->
-            <button onclick="window.location.href='KhataManagementScreen.html'" 
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
-                Customer
-            </button>
-            <button onclick="window.location.href='RetailerScreen.html'" 
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
-                Retailer 
-            </button>
-            <button onclick="window.location.href='DailySales.html'" 
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition">
-                Daily Sales 
-            </button>
-        </div>
 
-        <!-- Right side: User Dropdown -->
-        <div class="dropdown relative">
-            <button class="text-gray-800 font-medium">User ▼</button>
-            <div class="dropdown-content absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg">
-                <a href="#profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                <a href="Login_Signup.html" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
-            </div>
-        </div>
-    </header>
+    <div class="topnav">
+        <a class="active" href="KhataManagementScreen.html">Customer</a>
+        <a href="RetailerScreen.html">Retailer</a>
+        <a href="DailySales.html">Daily Sales</a>
+        <a class="arctive" href="Login_Signup.html" style="float:right">Logout</a>
+        <a href="#profile" style="float:right">Profile</a>
+    </div>
 
 
     <!-- Main Content -->
@@ -112,13 +116,6 @@
             <canvas id="salesExpensesChart"></canvas>
         </section>
 
-        <!-- Quick Links -->
-        <section class="flex flex-wrap gap-4">
-            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Customer</button>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Sale</button>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Add Retailer</button>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">View Reports</button>
-        </section>
     </main>
 
     <script>
