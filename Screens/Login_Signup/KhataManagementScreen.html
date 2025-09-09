@@ -345,13 +345,14 @@
         const tbody = document.querySelector("#transactionTable tbody");
         tbody.innerHTML = "";
         (customer.transactions || []).forEach((tx) => {
+          const amount = Number(tx.amount) || 0; // ensure it's a number
           const tr = document.createElement("tr");
           tr.innerHTML = `
-          <td>${tx.date}</td>
-          <td>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</td>
-          <td>${tx.amount.toFixed(2)}</td>
-          <td>${tx.notes || ""}</td>
-        `;
+      <td>${tx.date}</td>
+      <td>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</td>
+      <td>${amount.toFixed(2)}</td>
+      <td>${tx.notes || ""}</td>
+    `;
           tbody.appendChild(tr);
         });
       }
