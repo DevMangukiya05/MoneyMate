@@ -1,397 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Customer Khata Management</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      background: #fff;
-    }
-    th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #007bff;
-      color: white;
-    }
-    button {
-      padding: 8px 12px;
-      margin: 5px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 10;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 6px;
-      width: 400px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .modal-header {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
-    label {
-      display: block;
-      margin-bottom: 4px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    .actions button {
-      margin-right: 5px;
-    }
-    /* Customer details page */
-    #customerDetails {
-      display: none;
-      background: #fff;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    #transactionTable th {
-      background-color: #28a745;
-    }
-    .balance {
-      font-weight: bold;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Customer Khata Management</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f9f9f9;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background: #fff;
+      }
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      button {
+        padding: 8px 12px;
+        margin: 5px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 6px;
+        width: 400px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .modal-header {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      label {
+        display: block;
+        margin-bottom: 4px;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      .actions button {
+        margin-right: 5px;
+      }
+      /* Customer details page */
+      #customerDetails {
+        display: none;
+        background: #fff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #transactionTable th {
+        background-color: #28a745;
+      }
+      .balance {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Customer Khata Management</h1>
 
-  <h1>Customer Khata Management</h1>
+    <button id="addCustomerBtn">Add New Customer</button>
 
-  <button id="addCustomerBtn">Add New Customer</button>
-
-  <table id="customerTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Phone Number</th>
-        <th>Total Due</th>
-        <th>Last Payment Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Customer rows will be dynamically inserted here -->
-    </tbody>
-  </table>
-
-  <!-- Add Customer Modal -->
-  <div id="addCustomerModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">Add New Customer</div>
-      <form id="addCustomerForm">
-        <div class="form-group">
-          <label for="custName">Name</label>
-          <input type="text" id="custName" name="custName" required />
-        </div>
-        <div class="form-group">
-          <label for="custPhone">Phone</label>
-          <input type="tel" id="custPhone" name="custPhone" required pattern="[0-9]{10,15}" />
-        </div>
-        <div class="form-group">
-          <label for="openingBalance">Opening Balance</label>
-          <input type="number" id="openingBalance" name="openingBalance" value="0" step="0.01" />
-        </div>
-        <div class="form-group">
-          <label for="notes">Notes</label>
-          <textarea id="notes" name="notes" rows="3"></textarea>
-        </div>
-        <button type="submit">Add Customer</button>
-        <button type="button" id="closeAddModal">Cancel</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Customer Details Section -->
-  <div id="customerDetails">
-    <h2 id="detailsName"></h2>
-    <p><strong>Phone:</strong> <span id="detailsPhone"></span></p>
-    <p><strong>Notes:</strong> <span id="detailsNotes"></span></p>
-
-    <h3>Transaction History</h3>
-    <table id="transactionTable">
+    <table id="customerTable">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Amount</th>
-          <th>Notes</th>
+          <th>Name</th>
+          <th>Phone Number</th>
+          <th>Total Due</th>
+          <th>Last Payment Date</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Transactions will be inserted here -->
+        <!-- Customer rows will be dynamically inserted here -->
       </tbody>
     </table>
 
-    <p class="balance">Pending Balance: <span id="pendingBalance"></span></p>
-
-    <button id="addPaymentBtn">Add Payment</button>
-    <button id="addPurchaseBtn">Add Purchase</button>
-    <button id="backToListBtn">Back to Customer List</button>
-  </div>
-
-  <!-- Add Transaction Modal -->
-  <div id="addTransactionModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header" id="transactionModalTitle">Add Transaction</div>
-      <form id="addTransactionForm">
-        <div class="form-group">
-          <label for="transactionDate">Date</label>
-          <input type="date" id="transactionDate" name="transactionDate" required />
-        </div>
-        <div class="form-group">
-          <label for="transactionType">Type</label>
-          <select id="transactionType" name="transactionType" required>
-            <option value="credit">Credit (Payment)</option>
-            <option value="debit">Debit (Purchase)</option>
-            <option value="discount">Discount</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="transactionAmount">Amount</label>
-          <input type="number" id="transactionAmount" name="transactionAmount" step="0.01" required />
-        </div>
-        <div class="form-group">
-          <label for="transactionNotes">Notes</label>
-          <textarea id="transactionNotes" name="transactionNotes" rows="2"></textarea>
-        </div>
-        <button type="submit">Add</button>
-        <button type="button" id="closeTransactionModal">Cancel</button>
-      </form>
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Add New Customer</div>
+        <form id="addCustomerForm">
+          <div class="form-group">
+            <label for="custName">Name</label>
+            <input type="text" id="custName" name="custName" required />
+          </div>
+          <div class="form-group">
+            <label for="custPhone">Phone</label>
+            <input
+              type="tel"
+              id="custPhone"
+              name="custPhone"
+              required
+              pattern="[0-9]{10,15}"
+            />
+          </div>
+          <div class="form-group">
+            <label for="openingBalance">Opening Balance</label>
+            <input
+              type="number"
+              id="openingBalance"
+              name="openingBalance"
+              value="0"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="3"></textarea>
+          </div>
+          <button type="submit">Add Customer</button>
+          <button type="button" id="closeAddModal">Cancel</button>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <script>
-    // Data storage (in-memory for demo)
-    let customers = [];
-    let selectedCustomerId = null;
+    <!-- Customer Details Section -->
+    <div id="customerDetails" style="display: none">
+      <h2 id="detailsName"></h2>
+      <p><strong>Phone:</strong> <span id="detailsPhone"></span></p>
+      <p><strong>Notes:</strong> <span id="detailsNotes"></span></p>
 
-    // Utility to format date as YYYY-MM-DD
-    function formatDate(date) {
-      const d = new Date(date);
-      return d.toISOString().split('T')[0];
-    }
+      <h3>Transaction History</h3>
+      <table id="transactionTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Transactions will be inserted here -->
+        </tbody>
+      </table>
 
-    // Calculate total due for a customer based on transactions
-    function calculateTotalDue(customer) {
-      let total = 0;
-      customer.transactions.forEach(tx => {
-        if (tx.type === 'debit') total += tx.amount;
-        else if (tx.type === 'credit' || tx.type === 'discount') total -= tx.amount;
-      });
-      return total.toFixed(2);
-    }
+      <p class="balance">Pending Balance: <span id="pendingBalance"></span></p>
 
-    // Get last payment date (credit type)
-    function getLastPaymentDate(customer) {
-      const payments = customer.transactions.filter(tx => tx.type === 'credit');
-      if (payments.length === 0) return '-';
-      payments.sort((a,b) => new Date(b.date) - new Date(a.date));
-      return payments[0].date;
-    }
+      <button id="addPaymentBtn">Add Payment</button>
+      <button id="addPurchaseBtn">Add Purchase</button>
+      <button id="backToListBtn">Back to Customer List</button>
+    </div>
 
-    // Render customer list table
-    function renderCustomerTable() {
-      const tbody = document.querySelector('#customerTable tbody');
-      tbody.innerHTML = '';
-      customers.forEach((cust, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+    <!-- Add Transaction Modal -->
+    <div id="addTransactionModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header" id="transactionModalTitle">
+          Add Transaction
+        </div>
+        <form id="addTransactionForm">
+          <div class="form-group">
+            <label for="transactionDate">Date</label>
+            <input
+              type="date"
+              id="transactionDate"
+              name="transactionDate"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="transactionType">Type</label>
+            <select id="transactionType" name="transactionType" required>
+              <option value="credit">Credit (Payment)</option>
+              <option value="debit">Debit (Purchase)</option>
+              <option value="discount">Discount</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="transactionAmount">Amount</label>
+            <input
+              type="number"
+              id="transactionAmount"
+              name="transactionAmount"
+              step="0.01"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="transactionNotes">Notes</label>
+            <textarea
+              id="transactionNotes"
+              name="transactionNotes"
+              rows="2"
+            ></textarea>
+          </div>
+          <button type="submit">Add</button>
+          <button type="button" id="closeTransactionModal">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://127.0.0.1:5000";
+      let customers = [];
+      let selectedCustomerId = null;
+
+      function formatDate(date) {
+        const d = new Date(date);
+        return d.toISOString().split("T")[0];
+      }
+
+      function calculateTotalDue(customer) {
+        let total = 0;
+        (customer.transactions || []).forEach((tx) => {
+          const amount = Number(tx.amount) || 0; // Convert to number safely
+          if (tx.type === "debit") total += amount;
+          else if (tx.type === "credit" || tx.type === "discount")
+            total -= amount;
+        });
+        return total.toFixed(2);
+      }
+
+      function getLastPaymentDate(customer) {
+        const payments = (customer.transactions || []).filter(
+          (tx) => tx.type === "credit"
+        );
+        if (payments.length === 0) return "-";
+        payments.sort((a, b) => new Date(b.date) - new Date(a.date));
+        return payments[0].date;
+      }
+
+      function renderCustomerTable() {
+        const tbody = document.querySelector("#customerTable tbody");
+        tbody.innerHTML = "";
+        customers.forEach((cust, index) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
           <td>${cust.name}</td>
           <td>${cust.phone}</td>
           <td>${calculateTotalDue(cust)}</td>
           <td>${getLastPaymentDate(cust)}</td>
-          <td class="actions">
-            <button onclick="viewCustomerDetails(${index})">View</button>
-          </td>
+          <td><button onclick="viewCustomerDetails(${index})">View</button></td>
         `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Show modal helper
-    function showModal(modalId) {
-      document.getElementById(modalId).style.display = 'block';
-    }
-    // Hide modal helper
-    function hideModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
-
-    // Add New Customer button click
-    document.getElementById('addCustomerBtn').addEventListener('click', () => {
-      document.getElementById('addCustomerForm').reset();
-      showModal('addCustomerModal');
-    });
-
-    // Close Add Customer modal
-    document.getElementById('closeAddModal').addEventListener('click', () => {
-      hideModal('addCustomerModal');
-    });
-
-    // Add Customer form submit
-    document.getElementById('addCustomerForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const name = e.target.custName.value.trim();
-      const phone = e.target.custPhone.value.trim();
-      const openingBalance = parseFloat(e.target.openingBalance.value) || 0;
-      const notes = e.target.notes.value.trim();
-
-      const newCustomer = {
-        name,
-        phone,
-        notes,
-        transactions: []
-      };
-      if (openingBalance !== 0) {
-        newCustomer.transactions.push({
-          date: formatDate(new Date()),
-          type: 'debit',
-          amount: openingBalance,
-          notes: 'Opening Balance'
+          tbody.appendChild(tr);
         });
       }
-      customers.push(newCustomer);
-      renderCustomerTable();
-      hideModal('addCustomerModal');
-    });
 
-    // View Customer Details
-    function viewCustomerDetails(index) {
-      selectedCustomerId = index;
-      const cust = customers[index];
-      document.getElementById('detailsName').textContent = cust.name;
-      document.getElementById('detailsPhone').textContent = cust.phone;
-      document.getElementById('detailsNotes').textContent = cust.notes || '-';
-
-      renderTransactionHistory(cust);
-      document.getElementById('pendingBalance').textContent = calculateTotalDue(cust);
-
-      document.getElementById('customerDetails').style.display = 'block';
-      document.getElementById('customerTable').style.display = 'none';
-      document.getElementById('addCustomerBtn').style.display = 'none';
-    }
-
-    // Render transaction history table
-    function renderTransactionHistory(customer) {
-      const tbody = document.querySelector('#transactionTable tbody');
-      tbody.innerHTML = '';
-      customer.transactions.forEach(tx => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${tx.date}</td>
-          <td>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</td>
-          <td>${tx.amount.toFixed(2)}</td>
-          <td>${tx.notes || ''}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Back to customer list
-    document.getElementById('backToListBtn').addEventListener('click', () => {
-      selectedCustomerId = null;
-      document.getElementById('customerDetails').style.display = 'none';
-      document.getElementById('customerTable').style.display = 'table';
-      document.getElementById('addCustomerBtn').style.display = 'inline-block';
-    });
-
-    // Add Payment / Purchase buttons
-    document.getElementById('addPaymentBtn').addEventListener('click', () => {
-      openTransactionModal('credit');
-    });
-    document.getElementById('addPurchaseBtn').addEventListener('click', () => {
-      openTransactionModal('debit');
-    });
-
-    // Open transaction modal with preset type
-    function openTransactionModal(type) {
-      document.getElementById('addTransactionForm').reset();
-      document.getElementById('transactionDate').value = formatDate(new Date());
-      document.getElementById('transactionType').value = type;
-      document.getElementById('transactionModalTitle').textContent = type === 'credit' ? 'Add Payment' : 'Add Purchase';
-      showModal('addTransactionModal');
-    }
-
-    // Close transaction modal
-    document.getElementById('closeTransactionModal').addEventListener('click', () => {
-      hideModal('addTransactionModal');
-    });
-
-    // Add Transaction form submit
-    document.getElementById('addTransactionForm').addEventListener('submit', e => {
-      e.preventDefault();
-      if (selectedCustomerId === null) return;
-
-      const date = e.target.transactionDate.value;
-      const type = e.target.transactionType.value;
-      const amount = parseFloat(e.target.transactionAmount.value);
-      const notes = e.target.transactionNotes.value.trim();
-
-      if (amount <= 0) {
-        alert('Amount must be greater than zero.');
-        return;
+      function showModal(modalId) {
+        document.getElementById(modalId).style.display = "block";
+      }
+      function hideModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
       }
 
-      customers[selectedCustomerId].transactions.push({
-        date,
-        type,
-        amount,
-        notes
+      document
+        .getElementById("addCustomerBtn")
+        .addEventListener("click", () => {
+          document.getElementById("addCustomerForm").reset();
+          showModal("addCustomerModal");
+        });
+      document
+        .getElementById("closeAddModal")
+        .addEventListener("click", () => hideModal("addCustomerModal"));
+      document
+        .getElementById("closeTransactionModal")
+        .addEventListener("click", () => hideModal("addTransactionModal"));
+
+      document
+        .getElementById("addCustomerForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = {
+            name: e.target.custName.value.trim(),
+            phone: e.target.custPhone.value.trim(),
+            notes: e.target.notes.value.trim(),
+            openingBalance: parseFloat(e.target.openingBalance.value) || 0,
+          };
+          const res = await fetch(`${API_URL}/customers`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+          const result = await res.json();
+          if (result.success) {
+            fetchCustomers();
+            hideModal("addCustomerModal");
+          }
+        });
+
+      async function viewCustomerDetails(index) {
+        selectedCustomerId = customers[index].id;
+        const cust = customers[index];
+        document.getElementById("detailsName").textContent = cust.name;
+        document.getElementById("detailsPhone").textContent = cust.phone;
+        document.getElementById("detailsNotes").textContent = cust.notes || "-";
+        const res = await fetch(`${API_URL}/customers/${cust.id}/transactions`);
+        cust.transactions = await res.json();
+        renderTransactionHistory(cust);
+        document.getElementById("pendingBalance").textContent =
+          calculateTotalDue(cust);
+        document.getElementById("customerDetails").style.display = "block";
+        document.getElementById("customerTable").style.display = "none";
+        document.getElementById("addCustomerBtn").style.display = "none";
+      }
+
+      function renderTransactionHistory(customer) {
+        const tbody = document.querySelector("#transactionTable tbody");
+        tbody.innerHTML = "";
+        (customer.transactions || []).forEach((tx) => {
+          const amount = Number(tx.amount) || 0; // ensure it's a number
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+      <td>${tx.date}</td>
+      <td>${tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</td>
+      <td>${amount.toFixed(2)}</td>
+      <td>${tx.notes || ""}</td>
+    `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document.getElementById("backToListBtn").addEventListener("click", () => {
+        selectedCustomerId = null;
+        document.getElementById("customerDetails").style.display = "none";
+        document.getElementById("customerTable").style.display = "table";
+        document.getElementById("addCustomerBtn").style.display =
+          "inline-block";
       });
 
-      renderTransactionHistory(customers[selectedCustomerId]);
-      document.getElementById('pendingBalance').textContent = calculateTotalDue(customers[selectedCustomerId]);
-      renderCustomerTable();
-      hideModal('addTransactionModal');
-    });
+      document
+        .getElementById("addPaymentBtn")
+        .addEventListener("click", () => openTransactionModal("credit"));
+      document
+        .getElementById("addPurchaseBtn")
+        .addEventListener("click", () => openTransactionModal("debit"));
 
-    // Initial render
-    renderCustomerTable();
-  </script>
-</body>
+      function openTransactionModal(type) {
+        document.getElementById("addTransactionForm").reset();
+        document.getElementById("transactionDate").value = formatDate(
+          new Date()
+        );
+        document.getElementById("transactionType").value = type;
+        document.getElementById("transactionModalTitle").textContent =
+          type === "credit" ? "Add Payment" : "Add Purchase";
+        showModal("addTransactionModal");
+      }
+
+      document
+        .getElementById("addTransactionForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!selectedCustomerId) return;
+          const formData = {
+            customerId: selectedCustomerId,
+            date: e.target.transactionDate.value,
+            type: e.target.transactionType.value,
+            amount: parseFloat(e.target.transactionAmount.value),
+            notes: e.target.transactionNotes.value.trim(),
+          };
+          const res = await fetch(`${API_URL}/transactions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+          const result = await res.json();
+          if (result.success) {
+            viewCustomerDetails(
+              customers.findIndex((c) => c.id === selectedCustomerId)
+            );
+            hideModal("addTransactionModal");
+          }
+        });
+
+      async function fetchCustomers() {
+        const res = await fetch(`${API_URL}/customers`);
+        customers = await res.json();
+        // fetch transactions for totals
+        for (let cust of customers) {
+          const r = await fetch(`${API_URL}/customers/${cust.id}/transactions`);
+          cust.transactions = await r.json();
+        }
+        renderCustomerTable();
+      }
+
+      fetchCustomers();
+    </script>
+  </body>
 </html>
